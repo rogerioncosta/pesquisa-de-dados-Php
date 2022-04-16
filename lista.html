@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa Motoristas e Placas</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<?php require_once 'processo.php'; ?>
+
+<?php 
+   $conectDb = new mysqli('localhost' , 'root', '', 'pesquisadados') or die(mysqli_error($conectDb));
+
+    //Armazena o resultado em um variável selecionando os dados
+    $result = $conectDb->query("SELECT * FROM dados ORDER BY nomeplaca ASC") or die($conectDb->error);
+ ?>
+
+<div class="header">
+    <div class="header-center"><!--****-->
+        <p>Cadastro e Pesquisa de Motoristas e Placas</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="row justify-content-center">
+
+        <form action="processo.php" method="post">
+
+            <div class="form">
+                
+                <!--type="hidden" para esconder o input id-->
+                <div class="">
+                    <!--<label>ID</label>-->            
+                    <input type="hidden" name="id" value="<?php echo $id; ?>" class="form-control">
+                </div><!--id-->
+
+                <div class="inputs">
+                    <label>Nome ou Placa</label>
+                    <input type="text" name="nomeplaca" value="<?php echo $nomePlaca; ?>" class="form-control" placeholder="Digite nome ou placa" autocomplete="off" required>
+                </div><!--nome col-5-->
+
+                <div class="inputs">
+                    <label>CPF ou Renavam</label>
+                    <input type="text" name="cpfrenavam" value="<?php echo $cpfRenavam; ?>" class="form-control" placeholder="Digite CPF ou Renavam" autocomplete="off" required>
+                </div><!--nome col-5-->
+
+                <div class="btns">                                
+                    <a href="lista.php" class="btn btn-secondary">Cancelar</a>                    
+            
+                    <?php 
+                        //se o botão editar for pressionado
+                        if ($atualizar == true): ?>                        
+                         <button type="submit" class="btn btn-info" name="atualizar">Atualizar</button>
+
+                        <?php else: ?>
+                        <button type="submit" class="btn btn-primary" name="salvar">Salvar</button>
+
+                    <?php endif; ?>                        
+              
+                </div><!--Botões col-->
+
+
+            </div><!--form-row-->
+
+        </form><!--form-->        
+
+    </div><!--center form-->
+
+    <div class="justify-content-center">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome / Placa</th>
+                    <th>CPF / Renavam</th>
+                    <th>Ação</th>
+                </tr>    
+            </thead><!--cabeçalho-->  
+
+            <?php 
+                while ($linha = $result->fetch_assoc()):
+            ?>
+                <tr>
+                    <td> <?php echo $linha['nomeplaca']; ?> </td>
+                    <td><?php echo $linha['cpfrenavam']; ?> </td>
+                    <td>                     
+                        <a href="lista.php?editar=<?php echo $linha['id']; ?>" class="btn btn-info btn-sm">Editar</a>
+                        <!-- <a href="processo.php?apagar=<?php echo $linha['id']; ?>" class="btn btn-danger btn-sm">Apagar</a> -->
+                    </td>                    
+                </tr>                
+            <?php endwhile; ?>                  
+            
+        </table><!--Tabela-->
+    </div><!--center-->
+
+    </div><!--Container-->
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+</html>
